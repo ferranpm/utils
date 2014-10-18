@@ -3,6 +3,31 @@
 
 #include <stdlib.h>
 
+/**
+  * This macro creates all the necessary code for a new type of map.
+  *
+  * \param key_t
+  *     the type used for the keys
+  * \param value_t
+  *     the type used for the values
+  * \param malloc_key_func
+  *     a pointer to a function that allocates space for the key type
+  *     the signature is key_t* f(const key_t);
+  * \param malloc_value_func
+  *     a pointer to a function that allocates space for the key type
+  *     the signature is value_t* f(const value_t);
+  * \param assign_key_func
+  *     a pointer to a function that asigns to a variable the value of
+  *     another, signature: void f(key_t *dest, const key_t *orig)
+  * \param assign_value_func
+  *     a pointer to a function that asigns to a variable the value of
+  *     another, signature: void f(value_t *dest, const value_t *orig)
+  * \param hash_func
+  *     a pointer to a function that hashes keys
+  *     the signature is unsigned int f(const key_t);
+  * \param cmp_key_func
+  *     a pointer to a function that compares two key_t
+  */
 #define MAP_INIT( \
         key_t          , value_t, \
         malloc_key_func, malloc_value_func, \
