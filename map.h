@@ -6,7 +6,7 @@
 #define MAP_INIT( \
         key_t          , value_t, \
         malloc_key_func, malloc_value_func, \
-        asign_key_func , asign_value_func, \
+        assign_key_func , assign_value_func, \
         hash_func      , \
         cmp_key_func \
         ) \
@@ -32,9 +32,9 @@ void map_##key_t##_##value_t##_inner_put_node(struct node_##key_t##_##value_t **
     if (*node == NULL) { \
         *node = malloc(sizeof(struct node_##key_t##_##value_t)); \
         (*node)->key = malloc_key_func(key); \
-        asign_key_func(&((*node)->key), &key); \
+        assign_key_func(&((*node)->key), &key); \
         (*node)->value = malloc_value_func(value); \
-        asign_value_func(&((*node)->value), &value); \
+        assign_value_func(&((*node)->value), &value); \
         (*node)->next = NULL; \
     } \
     else map_##key_t##_##value_t##_inner_put_node(&(*node)->next, key, value); \
