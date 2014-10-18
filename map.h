@@ -6,7 +6,7 @@
 #define MAP_INIT( \
         key_t          , value_t, \
         malloc_key_func, malloc_value_func, \
-        assign_key_func , assign_value_func, \
+        assign_key_func, assign_value_func, \
         hash_func      , \
         cmp_key_func \
         ) \
@@ -69,7 +69,11 @@ struct node_##key_t##_##value_t* map_##key_t##_##value_t##_inner_get_node(struct
  \
 value_t map_##key_t##_##value_t##_inner_get(struct map_##key_t##_##value_t *map, key_t key, unsigned int hashed_key) { \
     if (map == NULL) return 0; \
-    if (map->key == hashed_key) return map_##key_t##_##value_t##_inner_get_node(map->node, key)->value; \
+    if (map->key == hashed_key) { \
+        struct node_##key_t##_##value_t *node = map_##key_t##_##value_t##_inner_get_node(map->node, key); \
+        if (node != NULL) return node->value; \
+        return 0; \
+    } \
     else if (hashed_key < map->key) return map_##key_t##_##value_t##_inner_get(map->left, key, hashed_key); \
     return map_##key_t##_##value_t##_inner_get(map->right, key, hashed_key); \
 } \
