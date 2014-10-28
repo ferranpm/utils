@@ -1,9 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-struct Client {
-    int socket;
-};
+struct client;
 
 int client_init(struct Client *);
 int client_connect(struct Client *, const char *, int);
