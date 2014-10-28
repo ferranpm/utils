@@ -4,6 +4,13 @@
 struct server;
 
 /**
+ * \brief Creates and returns a pointer to a new instance of server
+ *
+ * \return The pointer to the new server structure
+ */
+struct server* server_new();
+
+/**
  * \brief Initialize the server structure
  * 
  * \param s the server to initialize

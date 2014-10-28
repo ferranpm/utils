@@ -11,6 +11,10 @@ struct client {
     int socket;
 };
 
+struct client* client_new() {
+    return (struct client*)malloc(sizeof(struct client));
+}
+
 int client_init(struct client *c) {
     return (c->socket = socket(AF_INET, SOCK_STREAM, 0)) <= 0;
 }

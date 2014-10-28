@@ -4,6 +4,13 @@
 struct client;
 
 /**
+ * \brief Creates and returns a pointer to a new instance of client
+ *
+ * \return The pointer to the new client structure
+ */
+struct client* client_new();
+
+/**
  * \brief Initializes the client structure asigning a file descriptor to it
  */
 int client_init(struct client *);
@@ -14,6 +21,7 @@ int client_init(struct client *);
  * \param client the client structure to connect
  * \param ip the server IP to connect to
  * \param port the server port to connect to
+ * \return 0 on success
  */
 int client_connect(struct client *, const char *, int);
 
