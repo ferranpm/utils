@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/ip.h>
 #include <string.h>
+#include <pthread.h>
 
 struct server {
     void (*callback)(struct server *, int);
@@ -33,9 +34,22 @@ void server_set_callback(struct server *s, void (*callback)(struct server *, int
     s->callback = callback;
 }
 
+struct callback_params {
+    struct server *s;
+    int fd;
+};
+
+void *call_callback(void *parms) {
+    struct callback_params *params = (struct callback_params *)parms;
+    params->s->callback(params->s, params->fd);
+    return NULL;
+}
+
 void server_accept(struct server *s) {
     int fd = accept(s->socket, (struct sockaddr*)NULL, NULL);
-    s->callback(s, fd);
+    struct callback_params params = {s, fd};
+    pthread_t pthread;
+    pthread_create(&pthread, NULL, call_callback, &params);
 }
 
 int server_send(struct server *s, int fd, const char *msg) {
