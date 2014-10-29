@@ -1,4 +1,6 @@
-CFLAGS=-Wall
+CFLAGS= \
+		-Wall \
+		-g
 
 LIBS= \
 	 server.o \
@@ -7,10 +9,14 @@ LIBS= \
 
 all: $(LIBS)
 
-tests: $(TESTS)
+server.o: server.c server.h
+	$(CC) $(CFLAGS) -pthread -c server.c
 
-*.o: $(@:.o=.c) $(@:.o=.h)
-	$(CC) $(CFLAGS) -c $(@:.o=.c) -g
+client.o: client.c client.h
+	$(CC) $(CFLAGS) -c client.c
+
+pairparser.o: pairparser.c pairparser.h
+	$(CC) $(CFLAGS) -c pairparser.c
 
 clean:
 	rm *.o
