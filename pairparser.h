@@ -2,22 +2,26 @@
 #define PAIRPARSER_H
 
 #include "map.h"
-#include <string.h>
 
-#define MAX_KEYS 1024
+struct pairparser;
 
-typedef char* string;
+/**
+ * \brief Given the two separators and the text, creates a new instance of pairparser
+ *
+ * \param txt the text to parse
+ * \param pair the separator between key/value
+ * \param group the separator between pairs
+ * \return A pointer to a pairparser structure
+ */
+struct pairparser* pairparser_new(char *, const char, const char);
 
-char* string_malloc(string);
-void string_assign(string *, string *);
-unsigned int string_hash_function(string);
-int string_compare(string, string);
-
-struct PairParser {
-    struct map_string_string *map;
-};
-
-void pp_init(struct PairParser *, char *, char, char);
-char* pp_get(struct PairParser *, char *);
+/**
+ * \brief Gets the value of the given key
+ *
+ * \param pp the pairparser structure from which to get the value
+ * \param key the key to get the value from
+ * \return the string of the value
+ */
+char* pairparser_get(struct pairparser *, char *);
 
 #endif // PAIRPARSER_H

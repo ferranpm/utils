@@ -1,37 +1,50 @@
 #include "pairparser.h"
 
-MAP_INIT(
-        string              , string,
-        string_malloc       , string_malloc,
-        string_assign       , string_assign,
-        string_hash_function,
-        string_compare
-        );
+#include <string.h>
 
-char* string_malloc(string x) {
-    return malloc(sizeof(strlen(x)) * sizeof(char));
-}
+#define MAX_KEYS 1024
 
-void string_assign(string *a, string *b) {
-    strcpy(*a, *b);
+struct pairparser {
+    struct map_string_string *map;
+};
+
+// Hem de declarar aixi els strings per a evitar que
+// hi hagi segmentation faults degut a les operacions
+// que es fan en map_string_string
+typedef struct { char x[50]; } string;
+
+void string_assign(string *a, const string *b) {
+    strcpy(a->x, b->x);
 }
 
 unsigned int string_hash_function(string k) {
-    char *p = k;
+    char *p = k.x;
     unsigned int res = *p;
     while (*(++p) != '\0') res *= *p;
     return res%MAX_KEYS;
 }
 
 int string_compare(string a, string b) {
-    return strcmp(a, b) == 0;
+    return strcmp(a.x, b.x) != 0;
 }
 
-void pp_init(struct PairParser *pp, char *txt, char a, char b) {
+MAP_INIT(
+        string              , string,
+        string_assign       , string_assign,
+        string_hash_function,
+        string_compare
+        );
+
+/////////////////////////////////
+// PAIRPARSER PUBLIC FUNCTIONS //
+/////////////////////////////////
+struct pairparser* pairparser_new(char *txt, const char a, const char b) {
+    struct pairparser *pp = (struct pairparser*)malloc(sizeof(struct pairparser));
+    pp->map = map_string_string_new();
+
     char *t1 = txt;
     char *t0 = txt;
     int size;
-    map_string_string_init(&(pp->map));
     // TODO: Refactor
     while (*t1 != '\0') {
         // Get the key
@@ -52,10 +65,21 @@ void pp_init(struct PairParser *pp, char *txt, char a, char b) {
         if (*t1 != '\0') t1++;
         t0 = t1;
 
-        map_string_string_insert(&(pp->map), key, value);
+        string k, v;
+        strcpy(k.x, key);
+        strcpy(v.x, value);
+        map_string_string_insert(pp->map, k, v);
     }
+    return pp;
 }
 
-char* pp_get(struct PairParser *pp, char *key) {
-    return map_string_string_get(pp->map, key);
+char* pairparser_get(struct pairparser *pp, char *key) {
+    string *k = (string*)malloc(sizeof(string));
+    char *buff = (char*)malloc(sizeof(char)*50);
+
+    strcpy(k->x, key);
+    k = map_string_string_get(pp->map, *k);
+    strcpy(buff, k->x);
+
+    return buff;
 }
