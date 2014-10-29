@@ -21,7 +21,7 @@
   *     the signature is unsigned int f(const key_t);
   * \param cmp_key_func
   *     a pointer to a function that compares two key_t
-  *     the signature is int f(const key_t, const key_t);
+  *     the signature is int f(const key_t*, const key_t*);
   */
 #define MAP_INIT( \
         key_t          , value_t, \
@@ -51,18 +51,18 @@ struct map_##key_t##_##value_t* map_##key_t##_##value_t##_new() { \
     return map; \
 } \
  \
-struct node_##key_t##_##value_t* map_##key_t##_##value_t##_inner_insert_node(struct node_##key_t##_##value_t *node, const key_t key, const value_t value) { \
+struct node_##key_t##_##value_t* map_##key_t##_##value_t##_inner_insert_node(struct node_##key_t##_##value_t *node, const key_t *key, const value_t *value) { \
     if (node == NULL) { \
         node = malloc(sizeof(struct node_##key_t##_##value_t)); \
-        assign_key_func(&(node->key), &key); \
-        assign_value_func(&(node->value), &value); \
+        assign_key_func(&(node->key), key); \
+        assign_value_func(&(node->value), value); \
         node->next = NULL; \
     } \
     else node->next = map_##key_t##_##value_t##_inner_insert_node(node->next, key, value); \
     return node; \
 } \
  \
-struct map_##key_t##_##value_t* map_##key_t##_##value_t##_inner_insert(struct map_##key_t##_##value_t *map, const key_t key, const value_t value, unsigned int hashed) { \
+struct map_##key_t##_##value_t* map_##key_t##_##value_t##_inner_insert(struct map_##key_t##_##value_t *map, const key_t *key, const value_t *value, unsigned int hashed) { \
     if (map == NULL) map = map_##key_t##_##value_t##_new(); \
     if (map->node == NULL) { \
         map->key = hashed; \
@@ -78,12 +78,12 @@ struct map_##key_t##_##value_t* map_##key_t##_##value_t##_inner_insert(struct ma
  \
 void map_##key_t##_##value_t##_insert(struct map_##key_t##_##value_t *map, const key_t key, const value_t value) { \
     unsigned int hashed_key = hash_func(key); \
-    map_##key_t##_##value_t##_inner_insert(map, key, value, hashed_key); \
+    map_##key_t##_##value_t##_inner_insert(map, &key, &value, hashed_key); \
 } \
  \
 struct node_##key_t##_##value_t* map_##key_t##_##value_t##_inner_get_node(struct node_##key_t##_##value_t *node, key_t key) { \
     if (node == NULL) return NULL; \
-    if (cmp_key_func(node->key, key) == 0) return node; \
+    if (cmp_key_func(&(node->key), &key) == 0) return node; \
     return map_##key_t##_##value_t##_inner_get_node(node->next, key); \
 } \
  \

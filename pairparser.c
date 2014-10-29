@@ -24,8 +24,8 @@ unsigned int string_hash_function(string k) {
     return res%MAX_KEYS;
 }
 
-int string_compare(string a, string b) {
-    return strcmp(a.x, b.x) != 0;
+int string_compare(const string *a, const string *b) {
+    return strcmp(a->x, b->x) != 0;
 }
 
 MAP_INIT(
