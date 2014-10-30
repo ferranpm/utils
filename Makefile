@@ -7,7 +7,10 @@ LIBS= \
 	 client.o \
 	 pairparser.o
 
-all: $(LIBS)
+all: $(LIBS) tests
+
+tests:
+	make -C test
 
 server.o: server.c server.h
 	$(CC) $(CFLAGS) -pthread -c server.c
@@ -15,8 +18,8 @@ server.o: server.c server.h
 client.o: client.c client.h
 	$(CC) $(CFLAGS) -c client.c
 
-pairparser.o: pairparser.c pairparser.h
+pairparser.o: pairparser.c pairparser.h map.h
 	$(CC) $(CFLAGS) -c pairparser.c
 
 clean:
-	rm *.o
+	rm -rf *.o
