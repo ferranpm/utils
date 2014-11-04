@@ -22,32 +22,36 @@ struct list_##value_t* list_##value_t##_new() { \
 } \
  \
 struct list_##value_t* list_##value_t##_add(struct list_##value_t *list, const value_t item) { \
-    if (list == NULL) { \
-        list = list_##value_t##_new(); \
+    if (list->next == NULL) { \
+        list->next = list_##value_t##_new(); \
         list->item = item; \
     } \
     else list->next = list_##value_t##_add(list->next, item); \
     return list; \
 } \
  \
-struct list_##value_t* list_##value_t##_find_node(struct list_##value_t *list, unsigned int index, unsigned int count) { \
-    if (list == NULL) return NULL; \
-    if (index != count) return list_##value_t##_find_node(list->next, index, ++count); \
+value_t list_##value_t##_get_recursive(struct list_##value_t *list, const unsigned int index, const unsigned int count) { \
+    if (index == count) return list->item; \
+    return list_##value_t##_get_recursive(list->next, index, count + 1); \
+} \
+ \
+value_t list_##value_t##_get(struct list_##value_t *list, const unsigned int index) { \
+    return list_##value_t##_get_recursive(list, index, 0); \
+} \
+ \
+struct list_##value_t* list_##value_t##_remove_recursive(struct list_##value_t *list, const unsigned int index, const unsigned int count) { \
+    if (index == count) { \
+        struct list_##value_t *aux = list; \
+        list = list->next; \
+        free(aux); \
+    } \
+    else list->next = list_##value_t##_remove_recursive(list->next, index, count + 1); \
     return list; \
 } \
  \
-value_t* list_##value_t##_get(struct list_##value_t *list, unsigned int index) { \
-    struct list_##value_t *tmp = list_##value_t##_find_node(list, index, -1); \
-    if (tmp != NULL) return &(tmp->item); \
-    return NULL; \
+struct list_##value_t* list_##value_t##_remove(struct list_##value_t *list, const unsigned int index) { \
+    return list_##value_t##_remove_recursive(list, index, 0); \
 } \
  \
-void list_##value_t##_delete(struct list_##value_t *list, unsigned int index) { \
-    struct list_##value_t *prev = list_##value_t##_find_node(list, index-1, -1); \
-    struct list_##value_t *node = list_##value_t##_find_node(list, index, -1); \
-    struct list_##value_t *next = list_##value_t##_find_node(list, index+1, -1); \
-    free(node); \
-    if (prev != NULL && next != NULL) prev->next = next; \
-}
 
 #endif // LIST_H
