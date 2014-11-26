@@ -53,12 +53,13 @@ struct list_##value_t* list_##value_t##_remove(struct list_##value_t *list, cons
     return list_##value_t##_remove_recursive(list, index, 0); \
 } \
  \
-unsigned int list_##value_t##_find_recursive(struct list_##value_t *list, const value_t value, const int index) { \
+int list_##value_t##_find_recursive(struct list_##value_t *list, const value_t value, const int index) { \
+    if (list == NULL) return -1; \
     if (list->item == value) return index; \
     return list_##value_t##_find_recursive(list->next, value, index + 1); \
 } \
  \
-unsigned int list_##value_t##_find(struct list_##value_t *list, const value_t value) { \
+int list_##value_t##_find(struct list_##value_t *list, const value_t value) { \
     return list_##value_t##_find_recursive(list, value, 0); \
 }
 
