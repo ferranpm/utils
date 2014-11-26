@@ -10,6 +10,7 @@ LIBS= \
 all: $(LIBS) tests
 
 tests:
+	rm -f test/test
 	make -C test
 
 server.o: server.c server.h
