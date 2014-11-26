@@ -44,8 +44,9 @@ struct list_##value_t* list_##value_t##_remove_recursive(struct list_##value_t *
         struct list_##value_t *aux = list; \
         list = list->next; \
         free(aux); \
+        return list; \
     } \
-    else list->next = list_##value_t##_remove_recursive(list->next, index, count + 1); \
+    else if (list->next) list->next = list_##value_t##_remove_recursive(list->next, index, count + 1); \
     return list; \
 } \
  \
