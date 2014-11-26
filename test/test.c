@@ -3,6 +3,7 @@
 #include "pairparser.h"
 #include "map.h"
 #include "list.h"
+#include "matrix.h"
 
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -18,6 +19,7 @@ struct test tests[] = {
     { list, "list" },
     { clientserver, "clientserver"},
     { pairparser, "pairparser" },
+    { matrix, "matrix" },
     { NULL, NULL}
 };
 

@@ -10,7 +10,8 @@ DEPS= \
 	  ../client.o \
 	  ../server.o \
 	  pairparser.h \
-	  ../pairparser.o
+	  ../pairparser.o \
+	  matrix.h
 
 all: test
 
