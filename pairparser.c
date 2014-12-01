@@ -35,41 +35,31 @@ MAP_INIT(
         string_compare
         );
 
+struct pairparser* pairparser_inner_new(struct pairparser* pp, char *txt, const char a, const char b) {
+    char *sa = index(txt, a);
+    char *sb = index(txt, b);
+
+    if (sa == NULL) return pp;
+    else if (sb == NULL) sb = txt + strlen(txt);
+
+    string k, v;
+    strncpy(k.x, txt, sa - txt);
+    k.x[sa - txt] = 0;
+    strncpy(v.x, sa + 1, sb - sa - 1);
+    v.x[sb - sa - 1] = 0;
+    map_string_string_insert(pp->map, k, v);
+
+    pairparser_inner_new(pp, sb + 1, a, b);
+    return pp;
+}
+
 /////////////////////////////////
 // PAIRPARSER PUBLIC FUNCTIONS //
 /////////////////////////////////
 struct pairparser* pairparser_new(char *txt, const char a, const char b) {
     struct pairparser *pp = (struct pairparser*)malloc(sizeof(struct pairparser));
     pp->map = map_string_string_new();
-
-    char *t1 = txt;
-    char *t0 = txt;
-    int size;
-    // TODO: Refactor
-    while (*t1 != '\0') {
-        // Get the key
-        while (*(++t1) != a);
-        size = t1 - t0;
-        char key[size + 1];
-        strncpy(key, t0, sizeof(char) * size);
-        key[size] = '\0';
-        t1++;
-        t0 = t1;
-
-        // Get the value
-        while (*(++t1) != b && *t1 != '\0');
-        size = t1 - t0;
-        char value[size + 1];
-        strncpy(value, t0, size);
-        value[size] = '\0';
-        if (*t1 != '\0') t1++;
-        t0 = t1;
-
-        string k, v;
-        strcpy(k.x, key);
-        strcpy(v.x, value);
-        map_string_string_insert(pp->map, k, v);
-    }
+    pp = pairparser_inner_new(pp, txt, a, b);
     return pp;
 }
 
