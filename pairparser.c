@@ -69,6 +69,7 @@ char* pairparser_get(struct pairparser *pp, char *key) {
 
     strcpy(k->x, key);
     k = map_string_string_get(pp->map, *k);
+    if (k == NULL) return NULL;
     strcpy(buff, k->x);
 
     return buff;
