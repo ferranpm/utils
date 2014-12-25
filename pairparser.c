@@ -8,24 +8,22 @@ struct pairparser {
     struct map_string_string *map;
 };
 
-// Hem de declarar aixi els strings per a evitar que
-// hi hagi segmentation faults degut a les operacions
-// que es fan en map_string_string
-typedef struct { char x[50]; } string;
+typedef char* string;
 
-void string_assign(string *a, const string *b) {
-    strcpy(a->x, b->x);
+void string_assign(char **a, char * const *b) {
+    *a = (char*)malloc(strlen(*b)*sizeof(char));
+    strcpy(*a, *b);
 }
 
-unsigned int string_hash_function(string k) {
-    char *p = k.x;
+unsigned int string_hash_function(char *k) {
+    char *p = k;
     unsigned int res = *p;
     while (*(++p) != '\0') res *= *p;
     return res%MAX_KEYS;
 }
 
-int string_compare(const string *a, const string *b) {
-    return strcmp(a->x, b->x) != 0;
+int string_compare(char * const *a, char * const *b) {
+    return strcmp(*a, *b) != 0;
 }
 
 MAP_INIT(
@@ -42,11 +40,14 @@ struct pairparser* pairparser_inner_new(struct pairparser* pp, char *txt, const 
     if (sa == NULL) return pp;
     else if (sb == NULL) sb = txt + strlen(txt);
 
-    string k, v;
-    strncpy(k.x, txt, sa - txt);
-    k.x[sa - txt] = 0;
-    strncpy(v.x, sa + 1, sb - sa - 1);
-    v.x[sb - sa - 1] = 0;
+    char *k = (char*)malloc((sa - txt + 1)*sizeof(char));
+    strncpy(k, txt, sa - txt);
+    k[sa - txt] = 0;
+
+    char *v = (char*)malloc((sb - sa)*sizeof(char));
+    strncpy(v, sa + 1, sb - sa - 1);
+    v[sb - sa - 1] = 0;
+
     map_string_string_insert(pp->map, k, v);
 
     pairparser_inner_new(pp, sb + 1, a, b);
@@ -64,13 +65,7 @@ struct pairparser* pairparser_new(char *txt, const char a, const char b) {
 }
 
 char* pairparser_get(struct pairparser *pp, char *key) {
-    string *k = (string*)malloc(sizeof(string));
-    char *buff = (char*)malloc(sizeof(char)*50);
-
-    strcpy(k->x, key);
-    k = map_string_string_get(pp->map, *k);
-    if (k == NULL) return NULL;
-    strcpy(buff, k->x);
-
-    return buff;
+    char **buff;
+    if ((buff = map_string_string_get(pp->map, key)) == NULL) return NULL;
+    return *buff;
 }
