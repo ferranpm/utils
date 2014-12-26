@@ -1,14 +1,10 @@
 CFLAGS= \
 		-Wall \
 		-g \
-		-pthread
 
 DEPS= \
 	  list.h \
 	  map.h \
-	  clientserver.h \
-	  ../client.o \
-	  ../server.o \
 	  pairparser.h \
 	  ../pairparser.o \
 	  matrix.h

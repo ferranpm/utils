@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "clientserver.h"
 #include "pairparser.h"
 #include "map.h"
 #include "list.h"
@@ -17,7 +16,6 @@ struct test {
 struct test tests[] = {
     { map, "map" },
     { list, "list" },
-    { clientserver, "clientserver"},
     { pairparser, "pairparser" },
     { matrix, "matrix" },
     { NULL, NULL}
