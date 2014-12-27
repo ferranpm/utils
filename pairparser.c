@@ -11,7 +11,7 @@ struct pairparser {
 typedef char* string;
 
 void string_assign(char **a, char * const *b) {
-    *a = (char*)malloc(strlen(*b)*sizeof(char));
+    *a = (char*)malloc(strlen(*b)*sizeof(char) + 1);
     strcpy(*a, *b);
 }
 
@@ -49,6 +49,9 @@ struct pairparser* pairparser_inner_new(struct pairparser* pp, char *txt, const 
     v[sb - sa - 1] = 0;
 
     map_string_string_insert(pp->map, k, v);
+
+    free(k);
+    free(v);
 
     pairparser_inner_new(pp, sb + 1, a, b);
     return pp;
