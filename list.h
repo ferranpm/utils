@@ -21,6 +21,11 @@ struct list_##value_t* list_##value_t##_new() { \
     return list; \
 } \
  \
+void list_##value_t##_delete(struct list_##value_t *list) { \
+    if (list->next != NULL) list_##value_t##_delete(list->next); \
+    free(list); \
+} \
+ \
 struct list_##value_t* list_##value_t##_add(struct list_##value_t *list, const value_t item) { \
     if (list->next == NULL) { \
         list->next = list_##value_t##_new(); \

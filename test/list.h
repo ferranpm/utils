@@ -27,6 +27,10 @@ int list() {
 
     int second = list_int_get(list, 3);
 
-    return first != 78 || second != 81 || list_find(list);
+    int ret = first != 78 || second != 81 || list_find(list);
+
+    list_int_delete(list);
+
+    return ret;
 }
 

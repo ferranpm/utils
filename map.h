@@ -51,6 +51,18 @@ struct map_##key_t##_##value_t* map_##key_t##_##value_t##_new() { \
     return map; \
 } \
  \
+void map_##key_t##_##value_t##_delete_node(struct node_##key_t##_##value_t *node) { \
+    if (node->next != NULL) map_##key_t##_##value_t##_delete_node(node->next); \
+    free(node); \
+} \
+ \
+void map_##key_t##_##value_t##_delete(struct map_##key_t##_##value_t *map) { \
+    if (map->left != NULL) map_##key_t##_##value_t##_delete(map->left); \
+    if (map->right != NULL) map_##key_t##_##value_t##_delete(map->right); \
+    map_##key_t##_##value_t##_delete_node(map->node); \
+    free(map); \
+} \
+ \
 struct node_##key_t##_##value_t* map_##key_t##_##value_t##_inner_insert_node(struct node_##key_t##_##value_t *node, const key_t *key, const value_t *value) { \
     if (node == NULL) { \
         node = malloc(sizeof(struct node_##key_t##_##value_t)); \

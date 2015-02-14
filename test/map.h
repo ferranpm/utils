@@ -30,5 +30,7 @@ int map() {
     int b = *map_int_int_get(map, 4);
     int c = *map_int_int_get(map, 1);
 
+    map_int_int_delete(map);
+
     return a != 30 || b != 40 || c != 10;
 }

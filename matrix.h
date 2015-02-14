@@ -20,6 +20,16 @@ struct matrix_##key_t* matrix_##key_t##_new(unsigned int n_rows, unsigned int n_
     return matrix; \
 } \
 \
+void matrix_##key_t##_delete(struct matrix_##key_t *matrix) { \
+    free(matrix->data); \
+    free(matrix); \
+} \
+\
+void matrix_##key_t##_set_cell(struct matrix_##key_t *matrix, unsigned int row, unsigned int col, key_t n) { \
+    key_t *cell = matrix->data + row*matrix->n_cols + col; \
+    *cell = n; \
+} \
+\
 void matrix_##key_t##_set_data(struct matrix_##key_t *matrix, key_t *data) { \
     matrix->data = data; \
 } \
