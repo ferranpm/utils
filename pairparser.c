@@ -8,22 +8,25 @@ struct pairparser {
     struct map_string_string *map;
 };
 
-typedef char* string;
+#ifndef STR_SIZE
+#define STR_SIZE 20
+#endif
 
-void string_assign(char **a, char * const *b) {
-    *a = (char*)malloc(strlen(*b)*sizeof(char) + 1);
-    strcpy(*a, *b);
+typedef struct {char x[STR_SIZE];} string;
+
+void string_assign(string *a, const string *b) {
+    strcpy(a->x, b->x);
 }
 
-unsigned int string_hash_function(char *k) {
-    char *p = k;
-    unsigned int res = *p;
-    while (*(++p) != '\0') res *= *p;
+unsigned int string_hash_function(const string k) {
+    int i;
+    unsigned int res = 1;
+    for (i = 0; i < STR_SIZE; i++) res *= k.x[i];
     return res%MAX_KEYS;
 }
 
-int string_compare(char * const *a, char * const *b) {
-    return strcmp(*a, *b) != 0;
+int string_compare(const string *a, const string *b) {
+    return strcmp(a->x, b->x) != 0;
 }
 
 MAP_INIT(
@@ -40,18 +43,15 @@ struct pairparser* pairparser_inner_new(struct pairparser* pp, char *txt, const 
     if (sa == NULL) return pp;
     else if (sb == NULL) sb = txt + strlen(txt);
 
-    char *k = (char*)malloc((sa - txt + 1)*sizeof(char));
-    strncpy(k, txt, sa - txt);
-    k[sa - txt] = 0;
+    string k;
+    strncpy(k.x, txt, sa - txt);
+    k.x[sa - txt] = 0;
 
-    char *v = (char*)malloc((sb - sa)*sizeof(char));
-    strncpy(v, sa + 1, sb - sa - 1);
-    v[sb - sa - 1] = 0;
+    string v;
+    strncpy(v.x, sa + 1, sb - sa - 1);
+    v.x[sb - sa - 1] = 0;
 
     map_string_string_insert(pp->map, k, v);
-
-    free(k);
-    free(v);
 
     pairparser_inner_new(pp, sb + 1, a, b);
     return pp;
@@ -67,8 +67,15 @@ struct pairparser* pairparser_new(char *txt, const char a, const char b) {
     return pp;
 }
 
+void pairparser_delete(struct pairparser *pp) {
+    map_string_string_delete(pp->map);
+    free(pp);
+}
+
 char* pairparser_get(struct pairparser *pp, char *key) {
-    char **buff;
-    if ((buff = map_string_string_get(pp->map, key)) == NULL) return NULL;
-    return *buff;
+    string *buff;
+    string k;
+    strcpy(k.x, key);
+    if ((buff = map_string_string_get(pp->map, k)) == NULL) return NULL;
+    return buff->x;
 }

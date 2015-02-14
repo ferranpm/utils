@@ -16,6 +16,13 @@ struct pairparser;
 struct pairparser* pairparser_new(char *, const char, const char);
 
 /**
+ * \brief Free the pairparser struct
+ *
+ * \param pp the pairparser structure to free
+ */
+void pairparser_delete(struct pairparser *);
+
+/**
  * \brief Gets the value of the given key
  *
  * \param pp the pairparser structure from which to get the value
